@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Medusa</string>
+    <string name="app_url">http://app.medusa.nl</string>
+    <string name="app_url_alt">http://medusa.dev.mizar-it.nl</string>
+</resources>
