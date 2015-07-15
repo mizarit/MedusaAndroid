@@ -1,7 +1,12 @@
 package app.medusa.nl.medusa;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 import android.webkit.JavascriptInterface;
 import android.os.Vibrator;
@@ -13,14 +18,40 @@ import java.util.PriorityQueue;
 
 class AndroidJS {
     Context myContext;
+    Activity myActivity;
     public static final String PROPERTY_PAYLOAD = "payload";
     public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
     public static final String PROPERTY_USE_SOUND = "sound";
     public static final String PROPERTY_USE_VIBRATE = "vibrate";
     public static final String PROPERTY_USE_NOTIFICATIONS = "notifications";
+    public static final String PROPERTY_BACK_CALLBACK = "back_callback";
 
-    public AndroidJS(Context context) {
+    static final String TAG = "MedusaJS";
+
+    private static final int REQUEST_CODE = 6666; // onActivityResult request code
+
+    public AndroidJS(Context context, Activity activity) {
         myContext = context;
+        myActivity = activity;
+    }
+
+    @JavascriptInterface
+    public void attachFileInput() {
+        Intent pickIntent = new Intent();
+        pickIntent.setType("image/*");
+        pickIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        String pickTitle = "Foto maken of selecteren"; // Or get from strings.xml
+        Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
+        chooserIntent.putExtra
+                (
+                        Intent.EXTRA_INITIAL_INTENTS,
+                        new Intent[] { takePhotoIntent }
+                );
+
+        myActivity.startActivityForResult(chooserIntent, REQUEST_CODE);
     }
 
     @JavascriptInterface
@@ -110,6 +141,16 @@ class AndroidJS {
         final SharedPreferences prefs = getMySharedPreferences(myContext);
         String setting = prefs.getString(key, "");
         return setting;
+    }
+
+    @JavascriptInterface
+    public void setPhysicalBackCallback(String callback)
+    {
+        final SharedPreferences prefs = getMySharedPreferences(myContext);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_BACK_CALLBACK, callback);
+        editor.commit();
     }
 
     private SharedPreferences getMySharedPreferences(Context context) {

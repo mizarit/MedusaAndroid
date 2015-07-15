@@ -34,7 +34,7 @@
         android:id="@+id/InnerRelativeOverallLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#17a6e2"
+        android:background="#ffffff"
         >
 		<ImageView
 		android:id="@+id/splash"
@@ -65,5 +65,11 @@
 	    
 	    </RelativeLayout>
 	</RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_x="1153dp"
+        android:layout_y="190dp"></RelativeLayout>
 </AbsoluteLayout>
 
